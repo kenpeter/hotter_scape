@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "axios": "^0.15.3",
+    "bluebird": "^3.5.0",
+    "osmosis": "^1.1.4"
+  },
+	"scripts": {
+		"start": "node ./hotter_scape.js"
+	}
+}

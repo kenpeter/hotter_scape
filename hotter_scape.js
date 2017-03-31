@@ -7,14 +7,14 @@ const path = require('path');
 
 const theBaseList = 'http://52kantu.cn/?page=';
 //const theListLength = 325;
-const theListLength = 1;
+const theListLength = 2;
 
 let listArr = [];
 let profileArr = [];
 
 function genEachPage(theBaseList, theListLength) {
   const theReturn = [];
-  for(var i=0; i<=theListLength; i++) {
+  for(var i=1; i<=theListLength; i++) {
     let page = theBaseList + i;
     theReturn.push(page);
   }
@@ -62,8 +62,12 @@ function eachProfile() {
           let tmp3 = tmp2[0];
           profile.count = tmp3;
 
-          console.log('--profile--');
-          console.log(profile);
+          let theBaseList = profile.url + '/page=';
+          let imgList = genEachPage(theBaseList, profile.count);
+          profile.imgList = imgList;
+
+          //console.log('--profile--');
+          //console.log(profile);
 
           resolve();
         });
@@ -73,14 +77,26 @@ function eachProfile() {
 
 }
 
+
 function eachProfileImg() {
   return Promise.each(profileArr, (profile) => {
     return new Promise((resolve, reject) => {
 
-    });
-  });
+      Promise.each(profile.imgList, (imgUrl) => {
+        return new Promise((resolve1, reject1) => {
+          console.log(imgUrl);
+          resolve1();
+        });
+      })
+      .then(() => {
+        resolve();
+      }); // end each
 
+    }); // end promise
+  }); // end promise
 }
+
+
 
 
 // run

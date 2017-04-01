@@ -39,7 +39,11 @@ function buildId() {
           //console.log('--- done one ---');
           //console.log(id);
           let url = "http://52kantu.cn/detail/" + id;
-          let obj = { url: url, count: 0};
+          let obj = {
+            profileId: id,
+            url: url,
+            count: 0
+          };
           profileArr.push(obj);
           resolve();
         })
@@ -115,6 +119,48 @@ function eachProfileImg() {
 }
 
 
+function dlEachImage() {
+  return Promise.each(profileArr, (profile) => {
+    return new Promise((resolve, reject) => {
+
+      Promise.each(profile.imgList, (imgUrl) => {
+        return new Promise((resolve1, reject1) => {
+          axios
+            .get(imgUrl, {responseType: 'arraybuffer'})
+            .then((imgData) => {
+              let tmpArr = imgUrl.split('/');
+              let fileName = tmpArr[tmpArr.length-1];
+
+              // dir
+              let profileImgDir = path.resolve(__dirname, 'imgs', profile.profileId);
+              if (!fs.existsSync(profileImgDir)) {
+                fs.mkdirSync(profileImgDir);
+              }
+
+              // write path
+              let savePath = path.resolve(__dirname, 'imgs', profile.profileId, fileName);
+              fs.writeFile(savePath, imgData.data, "binary", (err) => {
+                if(err) {
+                  console.log(err);
+                }
+                else {
+                  console.log(`save: ${savePath}`);
+                  resolve1();
+                }
+              }); // end fs write
+
+            });
+
+        }); // end promise
+      }) // end each promise
+      .then(() => {
+        resolve();
+      });
+
+    }); // end promise
+  }); // end each promise
+
+}
 
 
 // run
@@ -124,6 +170,9 @@ buildId()
 })
 .then(() => {
   return eachProfileImg();
+})
+.then(() => {
+  return dlEachImage();
 })
 .then(() => {
   console.log(profileArr);

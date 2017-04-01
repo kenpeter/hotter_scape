@@ -2,22 +2,22 @@ var mongodb = require('./connect');
 
 var Schema = mongodb.mongoose.Schema;
 
-var ImageSchema = new Schema({
-  imageId: String,
+var ProfileSchema = new Schema({
+  profileId: String,
   imgNames: [String],
   dateCreated: { type: Date, default: Date.now },
   dateUpdated: { type: Date, default: Date.now },
 });
 
-var ImageDAO = function(){};
-var Image = mongodb.mongoose.model('Image', ImageSchema);
+var ProfileDAO = function(){};
+var Profile = mongodb.mongoose.model('Profile', ProfileSchema);
 
-ImageDAO.prototype =  {
-  constructor: ImageDAO,
+ProfileDAO.prototype =  {
+  constructor: ProfileDAO,
 
   save: function(obj){
     return new Promise((resolve, reject) => {
-      var instance = new Image(obj);
+      var instance = new Profile(obj);
         instance.save((err) => {
           if(err) return reject(err);
           resolve();
@@ -27,7 +27,7 @@ ImageDAO.prototype =  {
 
     delete: function(query) {
       return new Promise((resolve, reject) => {
-        Image.remove(query, (err, data) => {
+        ProfileDAO.remove(query, (err, data) => {
           if(err) return reject(err);
           resolve(data);
         });

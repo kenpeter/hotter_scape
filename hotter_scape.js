@@ -47,7 +47,10 @@ function buildId() {
           profileArr.push(obj);
           resolve();
         })
-        .error(console.log);
+        .error((err) => {
+          console.error(err);
+          reject();
+        });
     }); // end promise
   }); // end promise each
 } // end run
@@ -76,7 +79,10 @@ function eachProfile() {
 
           resolve();
         })
-        .error(console.log);
+        .error((err) => {
+          console.error(err);
+          reject();
+        });
     });
 
   });
@@ -105,7 +111,10 @@ function eachProfileImg() {
               tmpImgList.push(tmpImgUrl);
               resolve1();
             })
-            .error(console.log);
+            .error((err) => {
+              console.error(err);
+              reject1();
+            });
 
         });
       })
@@ -141,7 +150,8 @@ function dlEachImage() {
               let savePath = path.resolve(__dirname, 'imgs', profile.profileId, fileName);
               fs.writeFile(savePath, imgData.data, "binary", (err) => {
                 if(err) {
-                  console.log(err);
+                  console.error(err);
+                  reject1();
                 }
                 else {
                   console.log(`save: ${savePath}`);
@@ -151,7 +161,8 @@ function dlEachImage() {
 
             });
 
-        }); // end promise
+        }) // end promise
+        .delay(7000)
       }) // end each promise
       .then(() => {
         resolve();

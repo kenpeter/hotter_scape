@@ -7,7 +7,7 @@ const path = require('path');
 
 const theBaseList = 'http://52kantu.cn/?page=';
 //const theListLength = 325;
-const theListLength = 2;
+const theListLength = 1;
 
 let listArr = [];
 let profileArr = [];
@@ -42,7 +42,8 @@ function buildId() {
           let obj = { url: url, count: 0};
           profileArr.push(obj);
           resolve();
-        });
+        })
+        .error(console.log);
     }); // end promise
   }); // end promise each
 } // end run
@@ -62,7 +63,7 @@ function eachProfile() {
           let tmp3 = tmp2[0];
           profile.count = tmp3;
 
-          let theBaseList = profile.url + '/page=';
+          let theBaseList = profile.url + '/?page=';
           let imgList = genEachPage(theBaseList, profile.count);
           profile.imgList = imgList;
 
@@ -70,7 +71,8 @@ function eachProfile() {
           //console.log(profile);
 
           resolve();
-        });
+        })
+        .error(console.log);
     });
 
   });
@@ -82,13 +84,29 @@ function eachProfileImg() {
   return Promise.each(profileArr, (profile) => {
     return new Promise((resolve, reject) => {
 
+      let tmpImgList = [];
       Promise.each(profile.imgList, (imgUrl) => {
         return new Promise((resolve1, reject1) => {
-          console.log(imgUrl);
-          resolve1();
+          // get image url
+          //console.log(imgUrl);
+          //resolve1();
+
+          osmosis
+            .get(imgUrl)
+            .set({
+              'src': '.img-responsive.img-thumbnail img@src'
+            })
+            .data((mydata) => {
+              let tmpImgUrl = 'http://52kantu.cn' + mydata.src;
+              tmpImgList.push(tmpImgUrl);
+              resolve1();
+            })
+            .error(console.log);
+
         });
       })
       .then(() => {
+        profile.imgList = tmpImgList;
         resolve();
       }); // end each
 

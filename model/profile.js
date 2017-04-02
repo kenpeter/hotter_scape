@@ -60,4 +60,4 @@ ProfileDAO.prototype =  {
     */
 }
 
-module.exports = ProductDAO;
+module.exports = ProfileDAO;

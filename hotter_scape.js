@@ -21,6 +21,12 @@ function genEachPage(theBaseList, theListLength) {
   return theReturn;
 }
 
+function genEachPageSpecial(theBaseList, pageNum) {
+  const theReturn = [];
+  let page = theBaseList + pageNum;
+  theReturn.push(page);
+  return theReturn;
+}
 
 listArr = genEachPage(theBaseList, theListLength);
 //console.log(JSON.stringify(listArr, null, 4));
@@ -51,7 +57,8 @@ function buildId() {
           console.error(err);
           reject();
         });
-    }); // end promise
+    }) // end promise
+    .delay(1000);
   }); // end promise each
 } // end run
 
@@ -83,7 +90,8 @@ function eachProfile() {
           console.error(err);
           reject();
         });
-    });
+    })
+    .delay(1000);
 
   });
 
@@ -118,6 +126,7 @@ function eachProfileImg() {
 
         });
       })
+      .delay(1000)
       .then(() => {
         profile.imgList = tmpImgList;
         resolve();
